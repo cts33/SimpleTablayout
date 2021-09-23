@@ -17,7 +17,6 @@ public class TabItemView extends TabView{
     private TabIcon mTabIcon;
     private TabTitle mTabTitle;
     private boolean mChecked;
-    private Drawable mDefaultBackground;
 
     public TabItemView(Context context) {
         super(context);
@@ -35,6 +34,7 @@ public class TabItemView extends TabView{
             mTitle = new TextView(mContext);
             LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
             params.gravity = Gravity.CENTER;
+
             mTitle.setLayoutParams(params);
             this.addView(mTitle);
         }
@@ -42,7 +42,7 @@ public class TabItemView extends TabView{
         initIconView();
     }
     private void initTitleView() {
-        mTitle.setTextColor(isChecked() ? mTabTitle.getColorSelected() : mTabTitle.getColorNormal());
+        setBackground(isChecked() ? getResources().getDrawable(R.drawable.selected_bg_shape):getResources().getDrawable(R.drawable.unselected_bg_shape));
         mTitle.setTextSize(mTabTitle.getTitleTextSize());
         mTitle.setText(mTabTitle.getContent());
         mTitle.setGravity(Gravity.CENTER);
@@ -103,8 +103,8 @@ public class TabItemView extends TabView{
     public void setChecked(boolean checked) {
         mChecked = checked;
         setSelected(checked);
+        setBackground(isChecked() ? getResources().getDrawable(R.drawable.selected_bg_shape):getResources().getDrawable(R.drawable.unselected_bg_shape));
         refreshDrawableState();
-        mTitle.setTextColor(checked ? mTabTitle.getColorSelected() : mTabTitle.getColorNormal());
         initIconView();
     }
 
@@ -137,22 +137,6 @@ public class TabItemView extends TabView{
         return this;
     }
 
-    @Override
-    public TabView setBackground(int resId) {
-        if (resId == 0) {
-            setDefaultBackground();
-        } else if (resId <= 0) {
-            setBackground(null);
-        } else {
-            super.setBackgroundResource(resId);
-        }
-        return this;
-    }
-    private void setDefaultBackground() {
-        if (getBackground() != mDefaultBackground) {
-            setBackground(mDefaultBackground);
-        }
-    }
     @Override
     public TabIcon getIcon() {
         return mTabIcon;

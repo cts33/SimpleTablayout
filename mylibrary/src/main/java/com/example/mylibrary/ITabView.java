@@ -10,7 +10,7 @@ public interface ITabView {
 
     TabView setTitle(TabTitle title);
 
-    TabView setBackground(int resid);
+//    TabView setBackground(int resid);
 
     TabIcon getIcon();
 

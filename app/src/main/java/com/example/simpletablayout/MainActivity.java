@@ -1,6 +1,7 @@
 package com.example.simpletablayout;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -35,15 +36,27 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public TabView.TabTitle getTitle(int position) {
-                return new ITabView.TabTitle.Builder().setContent("GGG-"+position).build();
+                return new ITabView.TabTitle.Builder().setContent("GGG-" + position).build();
+            }
+
+
+        });
+
+        mTablayout.addOnTabSelectedListener(new SimpleTabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabView tab, int position) {
+                Log.d(TAG, "onTabSelected: " + position);
             }
 
             @Override
-            public int getBackground(int position) {
-                return R.drawable.unselected_bg_shape;
+            public void onTabReselected(TabView tab, int position) {
+
+                Log.d(TAG, "onTabReselected: " + position);
             }
         });
 
 
     }
+
+    private static final String TAG = "MainActivity";
 }

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="simple_TabLayout">
+
+        <attr name="tab_margin" format="dimension" />
+
+        <attr name="tab_height" format="dimension"/>
+    </declare-styleable>
+</resources>

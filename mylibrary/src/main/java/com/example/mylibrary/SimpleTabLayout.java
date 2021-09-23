@@ -1,12 +1,8 @@
 package com.example.mylibrary;
 
-import android.animation.AnimatorSet;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Paint;
-import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -15,15 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SimpleTabLayout extends ScrollView {
-    private float mIndicatorCorners;
-    private int mIndicatorGravity;
     private int mTabMargin;
-    private int mTabMode;
     private int mTabHeight;
-    private int mIndicatorWidth;
-    private int mColorIndicator;
-    private static final int TAB_MODE_FIXED = 10;
-    private static final int TAB_MODE_SCROLLABLE = 11;
     private TabStrip mTabStrip;
     private TabView mSelectedTab;
     private List<OnTabSelectedListener> mTabSelectedListeners = new ArrayList<>();
@@ -46,16 +35,9 @@ public class SimpleTabLayout extends ScrollView {
 
 
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.simple_TabLayout);
-        mColorIndicator = typedArray.getColor(R.styleable.simple_TabLayout_indicator_color,
-                context.getResources().getColor(R.color.purple_200));
-        mIndicatorWidth = (int) typedArray.getDimension(R.styleable.simple_TabLayout_indicator_width, 9);
-        mIndicatorCorners = typedArray.getDimension(R.styleable.simple_TabLayout_indicator_corners, 0);
-        mIndicatorGravity = typedArray.getInteger(R.styleable.simple_TabLayout_indicator_gravity, Gravity.LEFT);
 
-        mTabMargin = (int) typedArray.getDimension(R.styleable.simple_TabLayout_tab_margin, 0);
-        mTabMode = typedArray.getInteger(R.styleable.simple_TabLayout_tab_mode, TAB_MODE_FIXED);
-        int defaultTabHeight = LinearLayout.LayoutParams.WRAP_CONTENT;
-        mTabHeight = (int) typedArray.getDimension(R.styleable.simple_TabLayout_tab_height, defaultTabHeight);
+        mTabMargin = (int) typedArray.getDimension(R.styleable.simple_TabLayout_tab_margin, dp2px(10));
+        mTabHeight = (int) typedArray.getDimension(R.styleable.simple_TabLayout_tab_height, dp2px(50));
         typedArray.recycle();
     }
 
@@ -107,12 +89,9 @@ public class SimpleTabLayout extends ScrollView {
                 mSelectedTab.setChecked(false);
             }
             view.setChecked(true);
-            if (updataIndicator) {
-                // TODO 切换tab的动画
-//                mTabStrip.moveIndicatorWithAnimator(position);
-            }
+
             mSelectedTab = view;
-            scrollToTab(position);
+
         }
         if (callListener) {
             for (int i = 0; i < mTabSelectedListeners.size(); i++) {
@@ -127,22 +106,15 @@ public class SimpleTabLayout extends ScrollView {
             }
         }
     }
-
-    private void scrollToTab(int position) {
-        final TabView tabView = getTabAt(position);
-        int y = getScrollY();
-        int tabTop = tabView.getTop() + tabView.getHeight() / 2 - y;
-        int target = getHeight() / 2;
-        if (tabTop > target) {
-            smoothScrollBy(0, tabTop - target);
-        } else if (tabTop < target) {
-            smoothScrollBy(0, tabTop - target);
+    public void addOnTabSelectedListener(OnTabSelectedListener listener) {
+        if (listener != null) {
+            mTabSelectedListeners.add(listener);
         }
     }
 
     private void addTabWithMode(TabView tabView) {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-        initTabWithMode(params);
+        initTabViewLayoutParams(params);
         mTabStrip.addView(tabView, params);
         if (mTabStrip.indexOfChild(tabView) == 0) {
             tabView.setChecked(true);
@@ -153,7 +125,7 @@ public class SimpleTabLayout extends ScrollView {
             mTabStrip.post(new Runnable() {
                 @Override
                 public void run() {
-                    mTabStrip.moveIndicator(0);
+
                 }
             });
         }
@@ -164,28 +136,16 @@ public class SimpleTabLayout extends ScrollView {
         return (TabView) mTabStrip.getChildAt(position);
     }
 
-    private void initTabWithMode(LinearLayout.LayoutParams params) {
-        if (mTabMode == TAB_MODE_FIXED) {
-            params.height = 0;
-            params.weight = 1.0f;
-            params.setMargins(0, 0, 0, 0);
-            setFillViewport(true);
-        } else if (mTabMode == TAB_MODE_SCROLLABLE) {
-            params.height = mTabHeight;
-            params.weight = 0f;
-            params.setMargins(0, mTabMargin, 0, 0);
-            setFillViewport(false);
-        }
-    }
+    private void initTabViewLayoutParams(LinearLayout.LayoutParams params) {
 
-    public void setTabMode(int mode) {
-
+        params.height = mTabHeight;
+        params.weight = 0f;
+        params.setMargins(0, mTabMargin, 0, 0);
+        setFillViewport(false);
 
     }
 
-    public void setTabHeight() {
 
-    }
 
     public void setTabAdapter(TabAdapter adapter) {
         removeAllTabs();
@@ -193,9 +153,9 @@ public class SimpleTabLayout extends ScrollView {
             mTabAdapter = adapter;
             for (int i = 0; i < adapter.getCount(); i++) {
                 TabItemView tabItemView = new TabItemView(getContext());
-                tabItemView
-                        .setTitle(adapter.getTitle(i))
-                        .setBackground(adapter.getBackground(i));
+                tabItemView.setPadding(20,20,20,20);
+
+                tabItemView.setTitle(adapter.getTitle(i));
                 addTab(tabItemView);
             }
         }
@@ -208,70 +168,17 @@ public class SimpleTabLayout extends ScrollView {
 
     private class TabStrip extends LinearLayout {
 
-        private float mIndicatorTopY;
-        private float mIndicatorX;
-        private float mIndicatorBottomY;
-        private int mLastWidth;
-        private Paint mIndicatorPaint;
-        private RectF mIndicatorRect;
-        private AnimatorSet mIndicatorAnimatorSet;
 
         public TabStrip(Context context) {
             super(context);
 
             setWillNotDraw(false);
             setOrientation(LinearLayout.VERTICAL);
-            mIndicatorPaint = new Paint();
-            mIndicatorPaint.setAntiAlias(true);
-            mIndicatorGravity = mIndicatorGravity == 0 ? Gravity.LEFT : mIndicatorGravity;
-            mIndicatorRect = new RectF();
-            setIndicatorGravity();
+
         }
 
-        protected void setIndicatorGravity() {
-            if (mIndicatorGravity == Gravity.LEFT) {
-                mIndicatorX = 0;
-                if (mLastWidth != 0) mIndicatorWidth = mLastWidth;
-                setPadding(mIndicatorWidth, 0, 0, 0);
-            } else if (mIndicatorGravity == Gravity.RIGHT) {
-                if (mLastWidth != 0) mIndicatorWidth = mLastWidth;
-                setPadding(0, 0, mIndicatorWidth, 0);
-            } else if (mIndicatorGravity == Gravity.FILL) {
-                mIndicatorX = 0;
-                setPadding(0, 0, 0, 0);
-            }
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    if (mIndicatorGravity == Gravity.RIGHT) {
-                        mIndicatorX = getWidth() - mIndicatorWidth;
-                    } else if (mIndicatorGravity == Gravity.FILL) {
-                        mLastWidth = mIndicatorWidth;
-                        mIndicatorWidth = getWidth();
-                    }
-                    invalidate();
-                }
-            });
-        }
 
-        protected void moveIndicator(float offset) {
-            calcIndicatorY(offset);
-            invalidate();
-        }
 
-        private void calcIndicatorY(float offset) {
-            int index = (int) Math.floor(offset);
-            View childView = getChildAt(index);
-            if (Math.floor(offset) != getChildCount() - 1 && Math.ceil(offset) != 0) {
-                View nextView = getChildAt(index + 1);
-                mIndicatorTopY = childView.getTop() + (nextView.getTop() - childView.getTop()) * (offset - index);
-                mIndicatorBottomY = childView.getBottom() + (nextView.getBottom() -
-                        childView.getBottom()) * (offset - index);
-            } else {
-                mIndicatorTopY = childView.getTop();
-                mIndicatorBottomY = childView.getBottom();
-            }
-        }
     }
 
     public interface OnTabSelectedListener {
@@ -280,4 +187,10 @@ public class SimpleTabLayout extends ScrollView {
 
         void onTabReselected(TabView tab, int position);
     }
+
+    public int dp2px(float dp) {
+        final float scale = getContext().getResources().getDisplayMetrics().density;
+        return (int) (dp * scale + 0.5f);
+    }
+
 }
