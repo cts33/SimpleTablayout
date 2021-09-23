@@ -18,13 +18,16 @@ public class TabItemView extends TabView{
     private TabTitle mTabTitle;
     private boolean mChecked;
 
+    private int mLRPadding;
+    private int mTBPadding;
     public TabItemView(Context context) {
         super(context);
 
         mContext = context;
         mTabIcon = new TabIcon.Builder().build();
         mTabTitle = new TabTitle.Builder().build();
-
+        mLRPadding = dp2px(20);
+        mTBPadding = dp2px(10);
         initView();
     }
 
@@ -43,11 +46,19 @@ public class TabItemView extends TabView{
     }
     private void initTitleView() {
         setBackground(isChecked() ? getResources().getDrawable(R.drawable.selected_bg_shape):getResources().getDrawable(R.drawable.unselected_bg_shape));
+
+        setPadding(mLRPadding,mTBPadding,mLRPadding,mTBPadding);
+        mTitle.setTextColor(isChecked()? getResources().getColor(R.color.black):getResources().getColor(R.color.gray));
         mTitle.setTextSize(mTabTitle.getTitleTextSize());
         mTitle.setText(mTabTitle.getContent());
         mTitle.setGravity(Gravity.CENTER);
         mTitle.setEllipsize(TextUtils.TruncateAt.END);
         refreshDrawablePadding();
+    }
+
+    public void setPadding(int mLRPadding,int mTBPadding){
+        this.mLRPadding = mLRPadding;
+        this.mTBPadding = mTBPadding;
     }
 
     private void initIconView() {
@@ -104,6 +115,8 @@ public class TabItemView extends TabView{
         mChecked = checked;
         setSelected(checked);
         setBackground(isChecked() ? getResources().getDrawable(R.drawable.selected_bg_shape):getResources().getDrawable(R.drawable.unselected_bg_shape));
+//        mTitle.setTextColor(isChecked()? getResources().getColor(R.color.black):getResources().getColor(R.color.gray));
+        mTitle.setTextColor(isChecked()? getResources().getColor(R.color.black):getResources().getColor(R.color.gray));
         refreshDrawableState();
         initIconView();
     }

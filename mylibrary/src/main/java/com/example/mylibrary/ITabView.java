@@ -3,6 +3,8 @@ package com.example.mylibrary;
 import android.view.Gravity;
 import android.view.View;
 
+import androidx.annotation.ColorRes;
+
 
 public interface ITabView {
 
@@ -136,7 +138,7 @@ public interface ITabView {
                 this.mContent = "";
             }
 
-            public Builder setTextColor(int colorSelected, int colorNormal) {
+            public Builder setTextColor(@ColorRes int colorSelected,@ColorRes int colorNormal) {
                 mColorSelected = colorSelected;
                 mColorNormal = colorNormal;
                 return this;

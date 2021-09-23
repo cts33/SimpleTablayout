@@ -2,12 +2,14 @@ package com.example.simpletablayout;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mylibrary.ITabView;
 import com.example.mylibrary.SimpleTabLayout;
 import com.example.mylibrary.TabAdapter;
+import com.example.mylibrary.TabItemView;
 import com.example.mylibrary.TabView;
 
 public class MainActivity extends AppCompatActivity {
@@ -23,20 +25,36 @@ public class MainActivity extends AppCompatActivity {
 
     private void initView() {
         mTablayout = (SimpleTabLayout) findViewById(R.id.tablayout);
+        mTablayout.setItemMargin(50);
+        mTablayout.setItemHeight(100);
+
         mTablayout.setTabAdapter(new TabAdapter() {
             @Override
             public int getCount() {
-                return 3;
+                return 13;
             }
 
             @Override
             public TabView.TabIcon getIcon(int position) {
-                return null;
+                return new ITabView.TabIcon.Builder()
+
+                        .setIcon(R.drawable.un_ic_baseline_5g_24, R.drawable.ic_baseline_5g_24)
+                        .setIconGravity(Gravity.START)
+                        .setIconMargin(20)
+                        .setIconSize(40, 40)
+
+                        .build();
             }
 
             @Override
             public TabView.TabTitle getTitle(int position) {
-                return new ITabView.TabTitle.Builder().setContent("GGG-" + position).build();
+
+                return new TabView.TabTitle.Builder()
+                        .setContent("GGG-" + position)
+                        .setTextColor(R.color.black, android.R.color.holo_red_light)
+
+                        .setTextSize(22)
+                        .build();
             }
 
 

@@ -153,9 +153,8 @@ public class SimpleTabLayout extends ScrollView {
             mTabAdapter = adapter;
             for (int i = 0; i < adapter.getCount(); i++) {
                 TabItemView tabItemView = new TabItemView(getContext());
-                tabItemView.setPadding(20,20,20,20);
 
-                tabItemView.setTitle(adapter.getTitle(i));
+                tabItemView.setTitle(adapter.getTitle(i)).setIcon(adapter.getIcon(i));
                 addTab(tabItemView);
             }
         }
@@ -164,6 +163,14 @@ public class SimpleTabLayout extends ScrollView {
     public void removeAllTabs() {
         mTabStrip.removeAllViews();
         mSelectedTab = null;
+    }
+
+    public void setItemMargin(int itemMargin) {
+        mTabMargin = itemMargin;
+    }
+
+    public void setItemHeight(int mItemHeight) {
+        this.mTabHeight = mItemHeight;
     }
 
     private class TabStrip extends LinearLayout {
