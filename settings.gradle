@@ -1,2 +1,4 @@
 rootProject.name = "SimpleTablayout"
 include ':app'
+//include ':samplelibrary'
+include ':mylibrary'
