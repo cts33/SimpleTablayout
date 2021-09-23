@@ -24,8 +24,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initView() {
+        //simpleTablelayout 组件只适用与竖向的tabLayout结构
         mTablayout = (SimpleTabLayout) findViewById(R.id.tablayout);
+        //item之间的上下间距
         mTablayout.setItemMargin(50);
+
+        //item的高度
         mTablayout.setItemHeight(100);
 
         mTablayout.setTabAdapter(new TabAdapter() {
@@ -36,11 +40,15 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public TabView.TabIcon getIcon(int position) {
+                //配置item里的图片
                 return new ITabView.TabIcon.Builder()
-
+                        //图片的状态切换
                         .setIcon(R.drawable.un_ic_baseline_5g_24, R.drawable.ic_baseline_5g_24)
+                        //图片的位置
                         .setIconGravity(Gravity.START)
+                        //图片和文字的间距
                         .setIconMargin(20)
+                        //图片的大小
                         .setIconSize(40, 40)
 
                         .build();
@@ -48,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public TabView.TabTitle getTitle(int position) {
-
+                //文字内容  文字的状态切换后的颜色，文字大小
                 return new TabView.TabTitle.Builder()
                         .setContent("GGG-" + position)
                         .setTextColor(R.color.black, android.R.color.holo_red_light)
