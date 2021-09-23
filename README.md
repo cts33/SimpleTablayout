@@ -2,7 +2,7 @@
 
 SimpleTablayout 只支持竖向展示的tabLayout样式，且item的样式目前也是固定的。后续如果需要会添加其他样式。
 
-![https://github.com/cts33/SimpleTablayout/blob/master/PIC/image1.png?raw=true]()
+![https://raw.githubusercontent.com/cts33/SimpleTablayout/67176544f00497b207b4024810cc1f936a320b4b/PIC/image1.png]()
 
 
 
